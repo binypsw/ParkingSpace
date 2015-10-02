@@ -1,7 +1,33 @@
-﻿
+﻿@using ParkingSpace.Models
+
 @{
-    ViewBag.Title = "Index";
+  ViewBag.Title = "Index";
+  var ticket = (ParkingTicket)TempData["newTicket"];
 }
 
 <h2>Gate In</h2>
+
+@using(Html.BeginForm("CreateTicket", "GateIn")) {
+  <div class="row">
+    <div class="col-lg-2">
+      Plate No. :
+    </div>
+    <div class="col-lg-3">
+      @Html.TextBox("plateNo")
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-3 col-lg-offset-2">
+      <button type="submit" class="btn btn-success">Issue Parking Ticket</button>
+    </div>
+  </div>
+}
+
+@if (ticket != null) {
+  <div class="well">
+    @ticket.Id <br />
+    @ticket.PlateNumber <br />
+    @ticket.DateIn
+  </div>
+}
 
