@@ -5,14 +5,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ParkingSpace.Web.Printing;
+using Rotativa;
 
 namespace ParkingSpace.Web.Controllers {
+
   [RoutePrefix("gate-in")]
   public class GateInController : Controller {
     private static ParkingTicketService service;
 
+    private IParkingTicketPrinter printer;
+
     static GateInController() {
       service = new ParkingTicketService();
+    }
+
+    public GateInController() {
+      printer = new PDFParkingTicketPrinter();
+    }
+
+    public GateInController(IParkingTicketPrinter printer) {
+      this.printer = printer;
     }
 
     // GET: GateIn
@@ -25,7 +38,8 @@ namespace ParkingSpace.Web.Controllers {
     [Route("CreateTicket")]
     public ActionResult CreateTicket(string plateNo) {
       var ticket = service.CreateParkingTicket(plateNo);
-      printParkingTicket(ticket);
+
+      printer.Print(ticket, this.ControllerContext);
 
       TempData["newTicket"] = ticket;
       return RedirectToAction("Index");
@@ -33,10 +47,6 @@ namespace ParkingSpace.Web.Controllers {
 
     public ActionResult OpenBarrier() {
       throw new NotImplementedException();
-    }
-
-    private void printParkingTicket(ParkingTicket t) {
-      //
     }
   }
 }

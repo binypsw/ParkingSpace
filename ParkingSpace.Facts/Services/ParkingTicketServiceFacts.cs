@@ -91,6 +91,7 @@ namespace ParkingSpace.Facts.Services {
         output.WriteLine($"Plate:   {t.PlateNumber}");
         output.WriteLine($"Date In: {t.DateIn}");
       }
+      
     }
   }
 }
