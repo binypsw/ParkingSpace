@@ -12,20 +12,18 @@ namespace ParkingSpace.Web.Controllers {
 
   [RoutePrefix("gate-in")]
   public class GateInController : Controller {
-    private static ParkingTicketService service;
 
+    private App app;
     private IParkingTicketPrinter printer;
-
-    static GateInController() {
-      service = new ParkingTicketService();
-    }
 
     public GateInController() {
       printer = new PDFParkingTicketPrinter();
+      app = new App();
     }
 
-    public GateInController(IParkingTicketPrinter printer) {
+    public GateInController(IParkingTicketPrinter printer, App app) {
       this.printer = printer;
+      this.app = app;
     }
 
     // GET: GateIn
@@ -37,7 +35,7 @@ namespace ParkingSpace.Web.Controllers {
     [HttpPost]
     [Route("CreateTicket")]
     public ActionResult CreateTicket(string plateNo) {
-      var ticket = service.CreateParkingTicket(plateNo);
+      var ticket = app.ParkingTickets.CreateParkingTicket(plateNo);
 
       printer.Print(ticket, this.ControllerContext);
 

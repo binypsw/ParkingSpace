@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Xunit;
 using ParkingSpace.Models;
+using ParkingSpace.Services;
 
 namespace ParkingSpace.Facts.Controller {
   public class GateInControllerFacts {
@@ -33,12 +34,14 @@ namespace ParkingSpace.Facts.Controller {
 
       [Fact]
       public void ShouldCreatedPDFFile() {
-        var printer = new FakePrinter();
-        var ctrl = new GateInController(printer);
+        using (var app = new App(testing: true)) {
+          var printer = new FakePrinter();
+          var ctrl = new GateInController(printer, app);
 
-        ctrl.CreateTicket("000");
+          ctrl.CreateTicket("000");
 
-        Assert.True(printer.hasPrinted);
+          Assert.True(printer.hasPrinted);
+        }
       }
     }
 
