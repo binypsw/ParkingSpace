@@ -13,6 +13,11 @@ namespace ParkingSpace.Services {
     //public int NextId { get; set; }
 
     public override IRepository<ParkingTicket> Repository { get; set; }
+    public IEnumerable<ParkingTicket> ActiveTickets {
+      get {
+        return Query(x => x.DateOut == null);
+      }
+    }
 
     public ParkingTicketService() {
       GateId = 0;
@@ -49,6 +54,10 @@ namespace ParkingSpace.Services {
     public override ParkingTicket Find(params object[] keys) {
       string key = (string)keys[0];
       return Query(x => x.Id == key).SingleOrDefault();
+    }
+
+    public void Checkout(ParkingTicket t) {
+      t.DateOut = SystemTime.Now();
     }
   }
 }
