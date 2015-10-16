@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Should;
 
 namespace ParkingSpace.Facts.Services {
   public class ParkingTicketServiceFacts {
@@ -110,6 +111,46 @@ namespace ParkingSpace.Facts.Services {
           Assert.Equal("112233", firstTicket.PlateNumber);
         }
       }
+    }
+
+    public class CheckoutMethod {
+      [Fact]
+      public void ShouldStampDateOutToTicket() {
+        using (var app = new App(testing: true)) {
+          var t1 = app.ParkingTickets.CreateParkingTicket("1111");
+
+          app.ParkingTickets.Checkout(t1);
+
+          Assert.NotNull(t1.DateOut);
+        }
+
+      }
+    }
+
+    public class GetActiveTicketProperty {
+
+      [Fact]
+      public void ShouldReturnOnlyActiveTickets() {
+        using (var app = new App(testing: true)) {
+          var t1 = app.ParkingTickets.CreateParkingTicket("1111");
+          var t2 = app.ParkingTickets.CreateParkingTicket("1112");
+          var t3 = app.ParkingTickets.CreateParkingTicket("1113");
+          var t4 = app.ParkingTickets.CreateParkingTicket("1114");
+          var t5 = app.ParkingTickets.CreateParkingTicket("1115");
+
+          app.ParkingTickets.Checkout(t2);
+
+          IEnumerable<ParkingTicket> tickets = app.ParkingTickets.ActiveTickets;
+
+          Assert.Equal(4, tickets.Count());
+          tickets.ShouldNotContain(t2);
+          tickets.ShouldContain(t1);
+          tickets.ShouldContain(t3);
+          tickets.ShouldContain(t4);
+          tickets.ShouldContain(t5);
+        }
+      }
+
     }
   }
 }
